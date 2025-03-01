@@ -5,6 +5,8 @@ import Image from 'next/image';
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import React from 'react'
+import { Button } from './ui/button';
+import { signOutFunction } from '@/lib/actions/auth';
 
 const Header = () => {
 
@@ -24,6 +26,14 @@ const Header = () => {
                     >
                         Library
                     </Link>
+                </li>
+
+                <li>
+                    <Button onClick={async () => {
+                        await signOutFunction()
+                    }}>
+                        Logout
+                    </Button>
                 </li>
             </ul>
         </header>
