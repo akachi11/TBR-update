@@ -17,6 +17,8 @@ import { Input } from "@/components/ui/input"
 import Link from "next/link"
 import { FIELD_NAMES, FIELD_TYPES } from "@/constants"
 import ImageUpload from "./ImageUpload"
+import { toast } from "react-toastify"
+import { useRouter } from "next/navigation"
 
 interface Props<T extends FieldValues> {
     schema: ZodType<T>;
@@ -26,6 +28,7 @@ interface Props<T extends FieldValues> {
 }
 
 const AuthForm = <T extends FieldValues>({ type, schema, defaultValues, onSubmit }: Props<T>) => {
+    const router = useRouter()
     const isSignIn = type === "SIGN_IN"
 
     const form: UseFormReturn<T> = useForm({
@@ -34,7 +37,18 @@ const AuthForm = <T extends FieldValues>({ type, schema, defaultValues, onSubmit
     })
 
     // 2. Define a submit handler.
-    const handleSubmit: SubmitHandler<T> = async (data) => { }
+    const handleSubmit: SubmitHandler<T> = async (data) => {
+        const result = await onSubmit(data);
+        if (result.success) {
+            // Redirect to the dashboard
+            toast(isSignIn ? "Sign in successful" : "Sign up successful", { type: "success" })
+
+            router.push("/")
+        } else {
+            // Show an error message
+            toast(isSignIn ? "Error signing in" : "Error signing up", { type: "error" })
+        }
+    }
 
     return (
         <div className="flex flex-col gap-4">
